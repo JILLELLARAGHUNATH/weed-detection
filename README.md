@@ -1,47 +1,139 @@
-Steps Involved
+# Weed Detection in Crops Using MATLAB Image Processing
 
-Image Selection: User selects an image file.
+An image-processing prototype that identifies potential weed regions in crop images using colour-channel analysis, threshold segmentation, morphological operations, and region-based bounding boxes.
 
-RGB to Grayscale Conversion: Converts the image to grayscale.
+> **Project status:** Academic prototype / experimental implementation. Detection results depend on image quality, lighting, crop type, and the selected threshold. The current evaluation code should be reviewed before interpreting its printed metrics as validated accuracy.
 
-Extract RGB Components: Extracts red, green, and blue channels.
+## Overview
 
-Subtraction: Subtracts the grayscale image from the green channel.
+Weeds compete with crops for water, nutrients, sunlight, and growing space. Detecting weed regions in crop images can support more targeted monitoring and weed-management workflows.
 
-Denoising: Applies a median filter to remove noise.
+This project explores a classical computer-vision approach in MATLAB. It processes a user-selected image, creates a binary segmentation, extracts connected regions, and displays candidate regions with red bounding boxes.
 
-Threshold Segmentation: Converts the image to binary using thresholding.
+## Features
 
-Morphological Operations: Performs hole filling and edge removal.
+- Interactive selection of a JPG image.
+- RGB image inspection and grayscale conversion.
+- Green-channel and grayscale-based image processing.
+- Median filtering for noise reduction.
+- Automatic threshold selection using Otsu's method (`graythresh`).
+- Binary image segmentation and morphological processing.
+- Connected-component labelling and region measurements.
+- Visualisation of candidate regions using red bounding boxes.
 
-Labeling and Small Object Removal: Labels objects and removes small ones.
+## Technology Stack
 
-Bounding Box Application: Draws red rectangles around detected weed regions.
+| Component | Technology |
+|---|---|
+| Programming language | MATLAB |
+| Image processing | MATLAB Image Processing Toolbox |
+| Input | JPG crop / field images |
+| Detection approach | Colour-based segmentation and morphology |
 
-Performance Evaluation: Computes sensitivity, specificity, positive predictive value, and negative predictive value.
+## Repository Structure
 
-Dependencies
+```text
+weed-detection/
+├── README.md
+└── weed detection in crops/
+    └── Code/
+        ├── main.m
+        └── sample images/
+            ├── weed1.jpg
+            ├── weed2.jpg
+            ├── ...
+            └── weed11.JPG
+```
 
-MATLAB with Image Processing Toolbox
+## Requirements
 
-Usage
+- MATLAB.
+- MATLAB **Image Processing Toolbox**.
+- A desktop session capable of displaying MATLAB figures and opening the image-selection dialog.
+- JPG input images.
 
-Run the script in MATLAB.
+The script uses functions such as `rgb2gray`, `medfilt2`, `graythresh`, `imfill`, `bwmorph`, `bwlabel`, `bwareaopen`, and `regionprops`, which require image-processing functionality.
 
-Select an image file when prompted.
+## Getting Started
 
-View processed images and detection results.
+### 1. Clone the repository
 
-Check console for calculated performance metrics.
+```bash
+git clone https://github.com/JILLELLARAGHUNATH/weed-detection.git
+cd weed-detection
+```
 
-Output
+### 2. Open the project in MATLAB
 
-Processed images displayed in figures.
+Open MATLAB and navigate to:
 
-Bounding boxes around detected weed regions.
+```text
+weed detection in crops/Code/
+```
 
-Sensitivity, specificity, and predictive values printed in the MATLAB console.
+### 3. Run the script
 
-Author
+Open `main.m` and click **Run**, or execute it from the MATLAB Command Window:
 
-JILLELLA RAGHUNATH
+```matlab
+run('main.m')
+```
+
+### 4. Select an image
+
+When the file-selection dialog appears, choose a JPG image. Sample images are available in the `sample images` folder.
+
+### 5. View the output
+
+The script opens figures for intermediate processing stages and a final image with red rectangles around candidate regions. It also prints evaluation-related values in the MATLAB Command Window.
+
+## Processing Workflow
+
+1. **Image input:** Load the selected RGB image.
+2. **Grayscale conversion:** Convert the RGB image to grayscale.
+3. **Colour-channel extraction:** Separate the red, green, and blue channels.
+4. **Green-channel subtraction:** Subtract the grayscale image from the green channel to emphasise colour differences.
+5. **Noise reduction:** Apply a median filter to reduce local noise.
+6. **Thresholding:** Estimate a threshold using Otsu's method and create a binary image.
+7. **Morphological processing:** Fill holes and apply a morphological boundary operation.
+8. **Connected components:** Label segmented regions and measure their properties.
+9. **Region filtering and visualisation:** Use region measurements to select candidate regions and draw red bounding boxes on the original image.
+
+## Output
+
+The current script displays:
+
+- The original input image.
+- Intermediate grayscale, filtered, and segmented images.
+- Morphological and labelled-region visualisations.
+- A final image with red bounding boxes around candidate regions.
+- Evaluation-related values in the MATLAB Command Window.
+
+**Important:** A bounding box indicates a candidate segmented region; it does not prove that the region is a weed. The current implementation does not use a trained machine-learning model or distinguish weed species.
+
+## Important Notes and Limitations
+
+- **Lighting sensitivity:** Colour-based segmentation can change significantly under shadows, direct sunlight, and different camera settings.
+- **Crop and weed variation:** Similar green colours between crops and weeds can cause false detections or missed regions.
+- **Input assumptions:** The script is currently written around RGB JPG images. Other formats and image types may require additional handling.
+- **Ground-truth evaluation:** The current script derives a comparison image from the input image itself rather than loading a manually annotated ground-truth mask. Therefore, its sensitivity, specificity, positive predictive value, and negative predictive value calculations are **not a validated measure of detection performance**.
+- **Implementation review:** The region-cleaning and bounding-box selection logic should be validated with labelled test images before the project is used for quantitative claims or real agricultural decisions.
+
+## Possible Future Improvements
+
+- Use manually annotated ground-truth masks for reliable evaluation.
+- Report precision, recall, F1-score, specificity, and intersection over union (IoU) on a separate test set.
+- Improve segmentation under variable lighting using colour-space transformations and adaptive thresholding.
+- Add robust input validation and support for common image formats.
+- Compare the classical image-processing pipeline with trained object-detection or semantic-segmentation models.
+- Build a simple user interface for batch processing and result export.
+
+## Author
+
+**Jillella Raghunath**
+
+GitHub: [@JILLELLARAGHUNATH](https://github.com/JILLELLARAGHUNATH)
+
+## License
+
+No license is currently specified in this repository. Unless a license is added, the default copyright rules apply and reuse or redistribution is not automatically granted.
