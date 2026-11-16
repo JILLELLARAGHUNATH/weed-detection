@@ -125,12 +125,7 @@ imwrite(im2uint8(filteredExg), fullfile(outputFolder, '03_filtered.png'));
 imwrite(binaryMask, fullfile(outputFolder, '04_initial_segmentation.png'));
 imwrite(cleanMask, fullfile(outputFolder, '05_cleaned_mask.png'));
 
-overlayImage = insertShape(originalImage, 'Rectangle', ...
-    reshape([regionStats.BoundingBox], 4, []).', ...
-    'Color', 'red', 'LineWidth', 3);
-
-imwrite(overlayImage, fullfile(outputFolder, '06_candidate_overlay.png'));
-
+% The annotated detection figure is exported below; no Computer Vision Toolbox is required.
 % Save a table of measured regions when candidates are present.
 if candidateCount > 0
     candidateID = (1:candidateCount).';
@@ -143,7 +138,7 @@ end
 % Save the figures for portfolio documentation.
 try
     exportgraphics(overlayFigure, ...
-        fullfile(outputFolder, '07_detection_result.png'), 'Resolution', 180);
+        fullfile(outputFolder, '06_detection_result.png'), 'Resolution', 180);
 catch
     saveas(overlayFigure, fullfile(outputFolder, '07_detection_result.png'));
 end
