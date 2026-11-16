@@ -68,7 +68,8 @@ weed-detection/
 ├── README.md
 └── weed detection in crops/
     └── Code/
-        ├── main.m
+        ├── main.m                 # Original project script
+        ├── main_improved.m         # Improved ExG-based candidate pipeline
         └── sample images/
             ├── weed1.jpg
             ├── weed2.jpg
@@ -100,13 +101,17 @@ In MATLAB, set the current folder to:
 weed detection in crops/Code/
 ```
 
-### 3. Run the script
+### 3. Run the improved pipeline (recommended)
 
-Open `main.m` and select **Run**, or enter this command in the MATLAB Command Window:
+Open `main_improved.m` and select **Run**, or enter this command in the MATLAB Command Window:
 
 ```matlab
-run('main.m')
+run('main_improved.m')
 ```
+
+Select a JPG, JPEG, PNG, or TIFF image when prompted. The script creates a folder beside the selected image containing the intermediate masks, a detection-figure export, and a CSV region summary when regions are found.
+
+The improved script uses the Excess Green (ExG) index, median filtering, Otsu thresholding, morphological cleanup, and connected-component measurements. It requires MATLAB and Image Processing Toolbox. The original `main.m` is retained for reference.
 
 ### 4. Choose an image
 
@@ -118,7 +123,7 @@ The script displays the original image and intermediate processing stages, follo
 
 ## 🔬 Workflow
 
-The following diagram summarises the stages implemented in the current MATLAB script.
+The diagram below represents the original pipeline. The improved script uses an Excess Green index before thresholding and includes explicit cleanup and export stages.
 
 <p align="center">
   <img src="assets/processing-workflow.svg" alt="Animated diagram of the weed image processing workflow" width="100%"/>
@@ -148,7 +153,21 @@ The current implementation produces MATLAB figure windows showing:
 - Labelled regions.
 - Final image with red candidate-region bounding boxes.
 
-**Note:** The repository currently contains sample input images, but no verified output screenshots or benchmark dataset. Add real MATLAB-generated outputs here when available; do not use illustrative graphics as measured detection results.
+**Note:** The repository contains sample input images. No MATLAB execution has been performed in this development environment, so generated output files and measured benchmark results are not yet included. The improved script saves its own outputs when run in MATLAB; do not treat conceptual diagrams as measured detection results.
+
+
+## 🧪 Improved MATLAB Pipeline
+
+The repository now includes `main_improved.m` alongside the original `main.m`. The original file is preserved. The improved version:
+
+- Accepts JPG, JPEG, PNG, and TIFF images.
+- Calculates an Excess Green (ExG) vegetation index.
+- Applies median filtering and Otsu thresholding.
+- Uses opening, closing, hole filling, and small-component removal.
+- Measures connected candidate regions and draws bounding boxes.
+- Exports intermediate images, a final annotated figure, and a CSV region summary.
+
+**Interpretation:** ExG highlights green-vegetation candidates. It does not reliably distinguish weeds from crop plants without additional contextual features or a trained classifier. The script does not report accuracy metrics because no independent ground-truth masks are included.
 
 ## ⚠️ Limitations and Evaluation Notes
 
@@ -157,7 +176,7 @@ A few implementation details matter when interpreting the output:
 1. **Colour similarity:** Crop leaves and weeds can have similar green values. Colour subtraction and thresholding may therefore produce false positives or miss regions.
 2. **Lighting variation:** Shadows, reflections, camera exposure, and field conditions can change segmentation results.
 3. **Candidate regions are not semantic labels:** The script does not train a classifier or identify weed species. It highlights regions selected by image-processing rules.
-4. **Ground-truth evaluation is not established:** The current code derives `gt_bw` from the input image itself rather than loading an independently annotated ground-truth mask. Consequently, the printed sensitivity, specificity, positive predictive value, and negative predictive value should **not** be treated as validated model-performance metrics.
+4. **Ground-truth evaluation is not established:** The legacy `main.m` derives `gt_bw` from the input image itself rather than loading an independently annotated ground-truth mask. Consequently, its printed sensitivity, specificity, positive predictive value, and negative predictive value should **not** be treated as validated model-performance metrics. The improved `main_improved.m` intentionally omits these invalid metrics.
 5. **Code validation is needed:** The region filtering, binary-mask dimensions and data types, and bounding-box selection logic should be tested on manually labelled images before making accuracy claims.
 
 ## 🛠️ Future Enhancements
