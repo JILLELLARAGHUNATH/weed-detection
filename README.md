@@ -219,6 +219,18 @@ The table below lists the sample image dimensions and the candidate-region count
             └── sample images/
                 └── weed1 ... weed11
 
+## Visual walkthrough
+
+<p align="center">
+  <img src="assets/exg-processing-pipeline.svg" alt="Animated Excess Green image-processing pipeline" width="100%"/>
+</p>
+
+<p align="center">
+  <sub>Follow the image from RGB input to a cleaned vegetation-candidate mask. The animated arrows show the processing flow; they do not represent live model execution.</sub>
+</p>
+
+---
+
 ## Quick Project Summary
 
 | Item | Details |
@@ -232,6 +244,9 @@ The table below lists the sample image dimensions and the candidate-region count
 | Current validation | MATLAB runtime validation is pending |
 
 This project currently performs **colour-based vegetation segmentation**. It does not yet provide a validated, general-purpose weed-versus-crop classifier.
+
+<details>
+<summary><strong>Technical details: script comparison, compatibility, input guidance and troubleshooting</strong></summary>
 
 ## Which MATLAB Script Should I Run?
 
@@ -299,6 +314,8 @@ When MATLAB becomes available, use this checklist for each test:
 
 Do not report accuracy, precision, recall, F1-score, IoU or execution time until the evaluation data, procedure and actual measurements are available.
 
+</details>
+
 ## Getting Started
 
 ### Prerequisites
@@ -354,6 +371,9 @@ To inspect the original implementation, open and run **main.m** separately. It a
 
 ---
 
+<details>
+<summary><strong>Validation status, evaluation checklist, limitations and future enhancements</strong></summary>
+
 ## Validation Status
 
 The repository includes MATLAB source code and supplementary sample-image previews. **The MATLAB scripts have not been executed or runtime-validated as part of this update**, because a MATLAB environment was not available.
@@ -392,6 +412,8 @@ The sensitivity, specificity, PPV and NPV listed in the research section belong 
 - Improve robustness to changing lighting and soil conditions.
 - Explore methods to distinguish crop plants from weeds more reliably.
 - Compare classical image processing with machine-learning and deep-learning approaches.
+
+</details>
 
 ## Reference
 
