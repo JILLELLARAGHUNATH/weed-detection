@@ -104,6 +104,47 @@ The improved implementation follows these stages:
 
 > **Implementation note:** The original script is preserved as **main.m**. The ExG-based approach is provided separately as **main_improved.m**.
 
+### Algorithm details
+
+#### Original script: `main.m`
+
+The original implementation performs the following operations:
+
+1. Reads a user-selected JPG image and converts it to grayscale with `rgb2gray`.
+2. Extracts the red, green and blue channels.
+3. Subtracts the grayscale image from the green channel: `greenChannel - grayImage`.
+4. Applies a median filter using `medfilt2`.
+5. Calculates an Otsu threshold with `graythresh` and creates a binary image with `im2bw`.
+6. Fills holes, applies the `remove` morphological operation, labels regions and calls `bwareaopen`.
+7. Measures region areas and draws bounding boxes for regions smaller than the calculated average area.
+
+The final size-based selection is a heuristic in the source code. It does not establish that a region is a weed. The original script also applies `bwareaopen` to the labelled image rather than explicitly to a logical binary mask, so its region-cleanup behaviour should be checked in MATLAB before relying on the output.
+
+#### Improved script: `main_improved.m`
+
+The improved implementation uses a more explicit vegetation-candidate segmentation pipeline:
+
+| Stage | Implementation | Purpose |
+|---|---|---|
+| Input normalization | Converts input to 8-bit RGB; grayscale images are replicated across three channels and extra channels are discarded | Provides a three-channel image for colour calculations |
+| Excess Green | `ExG = 2G - R - B` | Emphasises green relative to red and blue |
+| Normalization | `mat2gray` | Scales the ExG image for subsequent processing |
+| Smoothing | 3 × 3 median filter with symmetric padding | Reduces local noise |
+| Thresholding | Otsu threshold from `graythresh`, applied with `imbinarize` | Produces an initial binary candidate mask |
+| Morphological opening | Disk structuring element, radius 2 | Removes small foreground details and narrow connections |
+| Morphological closing | Disk structuring element, radius 3 | Closes small gaps in foreground regions |
+| Hole filling | `imfill(..., 'holes')` | Fills enclosed holes in candidate regions |
+| Small-region removal | `bwareaopen` with minimum area `max(10, round(imagePixels × 0.0001))` | Removes connected foreground components below the configured size |
+| Region analysis | 8-connected components and `regionprops` | Measures area, bounding box, centroid and eccentricity |
+
+The improved script uses a per-image Otsu threshold. Its output therefore depends on the distribution of pixel values in each selected image. The morphological size settings are fixed relative to the image dimensions only for the minimum-area threshold; the disk radii remain fixed pixel values.
+
+### How to interpret the algorithms
+
+Both implementations rely on colour and connected-region geometry. Neither uses labelled training data, a learned classifier, plant-species recognition or a crop-versus-weed decision model. A green region can belong to a crop, weed or another object. Soil, shadows, illumination, camera white balance, overlapping leaves and image resolution can affect the masks.
+
+The two scripts should be treated as separate approaches, not as interchangeable versions of one identical algorithm. The improved script's more explicit preprocessing and output handling do not, by themselves, prove higher detection accuracy. A fair comparison requires the same test images, a defined reference annotation, and a documented evaluation procedure.
+
 ## Research Reference Results
 
 The project documentation refers to the published paper **“Algorithm of Weed Detection in Crops by Computational Vision”** by A. J. Irías Tejeda and R. Castro Castro, presented at CONIELECOMP 2019.
@@ -178,6 +219,86 @@ The table below lists the sample image dimensions and the candidate-region count
             └── sample images/
                 └── weed1 ... weed11
 
+## Quick Project Summary
+
+| Item | Details |
+|---|---|
+| Project type | Academic image-processing prototype |
+| Main environment | MATLAB |
+| Main toolbox | Image Processing Toolbox |
+| Input | Crop-field image selected by the user |
+| Processing | Vegetation emphasis, filtering, thresholding and morphology |
+| Output | Visualised vegetation-candidate regions |
+| Current validation | MATLAB runtime validation is pending |
+
+This project currently performs **colour-based vegetation segmentation**. It does not yet provide a validated, general-purpose weed-versus-crop classifier.
+
+## Which MATLAB Script Should I Run?
+
+| Script | Method | Purpose |
+|---|---|---|
+| `main.m` | Green channel minus grayscale | Original implementation |
+| `main_improved.m` | Excess Green (ExG = 2G − R − B) | Separate improved vegetation-segmentation approach |
+
+The two scripts use different vegetation-emphasis calculations. Run them separately when comparing their behaviour; do not treat their outputs as directly equivalent.
+
+### Script compatibility and implementation notes
+
+| Detail | `main.m` | `main_improved.m` |
+|---|---|---|
+| File selection | JPG files only | JPG, JPEG, PNG, TIF and TIFF |
+| Input handling | Expects a colour RGB image | Converts grayscale input to RGB and uses the first three channels if extra channels are present |
+| Cancellation handling | Does not explicitly handle cancelling the file picker | Cancelling the file picker safely stops processing |
+| Saved files | Displays figures; does not create the structured output folder used by the improved script | Creates an `<image-name>_weed_detection_output` folder beside the selected image |
+
+**Recommendation:** Start with `main_improved.m`. It has clearer input handling and saves the intermediate masks and candidate-region data. The original `main.m` is retained for comparison and contains older assumptions; for example, it expects a JPG RGB image and should be tested carefully with different inputs.
+
+The original script also calculates sensitivity, specificity, PPV and NPV using a thresholded version of the input image as its comparison mask. That is not manually annotated ground truth, so those printed values must not be treated as a valid project evaluation. Use independently labelled reference masks for any performance evaluation.
+
+The original script also has a fragile region-count assumption: it accesses `region_img(2)` directly. If fewer than two regions are available, execution can stop at that line. It also suppresses MATLAB warnings globally with `warning off`, which can make troubleshooting harder. These are additional reasons to use `main_improved.m` as the starting point.
+
+## Input Image Guidance
+
+For a useful first test:
+
+- Choose a clear crop-field image in a supported common image format such as JPG or PNG.
+- Prefer an image with visible vegetation and soil/background.
+- Avoid starting with heavily blurred, extremely dark, or overexposed images.
+- Keep the original sample image unchanged so that results can be compared consistently.
+- Record the image filename and its dimensions when documenting a test.
+
+Lighting, shadows, soil colour, camera angle and overlapping leaves can all change the segmentation result. A highlighted region should therefore be treated as a candidate, not as a confirmed weed.
+
+## Understanding the Processing Output
+
+The workflow is intended to make intermediate image-processing stages inspectable:
+
+1. **Input image:** the original crop-field photograph.
+2. **Vegetation emphasis:** a representation that increases the contrast of green vegetation.
+3. **Filtered image:** a noise-reduced representation.
+4. **Binary mask:** pixels selected by thresholding.
+5. **Morphological result:** a mask refined by shape-based operations.
+6. **Connected components:** separate regions measured as candidate objects.
+7. **Overlay:** candidate regions visualised on the input image.
+
+A connected component is only a region in the binary mask. It is not proof that the region is a weed. Crop plants, weeds, shadows and other green objects may be included.
+
+## Reproducible Testing Checklist
+
+When MATLAB becomes available, use this checklist for each test:
+
+- [ ] Record the MATLAB release and operating system.
+- [ ] Confirm that Image Processing Toolbox is installed.
+- [ ] Record which script was run: `main.m` or `main_improved.m`.
+- [ ] Record the exact input image filename and dimensions.
+- [ ] Save the original input image and generated output separately.
+- [ ] Record any warnings or errors shown in the MATLAB Command Window.
+- [ ] Inspect the binary mask and overlay, not only the final bounding boxes.
+- [ ] Repeat the test with more than one lighting condition.
+- [ ] Compare candidate regions against manually annotated ground truth before calculating metrics.
+
+Do not report accuracy, precision, recall, F1-score, IoU or execution time until the evaluation data, procedure and actual measurements are available.
+
 ## Getting Started
 
 ### Prerequisites
@@ -203,9 +324,35 @@ Open **main_improved.m** in MATLAB and select **Run**, or execute:
 
     run('main_improved.m')
 
-Select an image when the file-selection dialog appears. The script displays the processing stages and saves intermediate outputs and candidate-region information beside the selected image.
+Select a JPG, JPEG, PNG, TIF or TIFF image when the file-selection dialog appears. The script displays the processing stages and creates an output folder beside the selected image, named `<image-name>_weed_detection_output`.
 
-To inspect the original implementation, open and run **main.m**.
+The improved script saves these outputs:
+
+- `01_original.png` — normalized RGB input image.
+- `02_excess_green.png` — normalized Excess Green image.
+- `03_filtered.png` — median-filtered vegetation index.
+- `04_initial_segmentation.png` — thresholded binary mask.
+- `05_cleaned_mask.png` — mask after morphological cleanup.
+- `candidate_regions.csv` — region ID, area in pixels and eccentricity; created when at least one candidate region is found.
+- `06_detection_result.png` — annotated candidate overlay. If figure export is unavailable, the script falls back to `07_detection_result.png`.
+
+To inspect the original implementation, open and run **main.m** separately. It accepts JPG input only and does not create the same structured output folder.
+
+## Troubleshooting
+
+| Symptom | Likely explanation | What to check |
+|---|---|---|
+| MATLAB reports that a function such as `imbinarize`, `imopen`, `bwconncomp` or `regionprops` is undefined | The required Image Processing Toolbox may be missing or unavailable | Confirm that Image Processing Toolbox is installed and licensed in your MATLAB environment |
+| The file-selection dialog closes without processing | No input image was selected | In `main_improved.m`, cancelling the dialog intentionally stops the script; run it again and choose a supported image |
+| An image does not appear in the file picker | Its extension may not be supported by the selected script | `main.m` accepts JPG files; `main_improved.m` accepts JPG, JPEG, PNG, TIF and TIFF |
+| The output folder or image files are not created | MATLAB may not have permission to write beside the selected input image, or the destination may be unavailable | Choose an input image in a folder where you have write permission, then run the improved script again |
+| No candidate boxes appear | The thresholded and cleaned mask may contain no connected foreground regions | Inspect the Excess Green image, initial segmentation and cleaned mask; try another well-lit image with visible vegetation |
+| The CSV file is missing from the output folder | The improved script writes `candidate_regions.csv` only when at least one candidate region is found | Check the cleaned mask and the Command Window's reported candidate-region count |
+| The annotated result is saved as `07_detection_result.png` instead of `06_detection_result.png` | The script's `exportgraphics` call failed and its fallback save operation was used | Open the fallback image and check the MATLAB Command Window for any export-related message |
+
+**Important:** These checks are based on the current source code. They are troubleshooting guidance, not evidence that the scripts have been executed successfully in a MATLAB environment. The original `main.m` does not include the improved script's file-picker cancellation handling and may fail if the dialog is cancelled.
+
+---
 
 ## Validation Status
 
@@ -214,6 +361,19 @@ The repository includes MATLAB source code and supplementary sample-image previe
 The sample gallery and candidate counts are Python-generated previews, not MATLAB execution outputs or verified weed-detection results. They are provided to illustrate the image-processing concept only. No project-specific accuracy, precision, recall, F1-score or processing-time claim is made.
 
 To validate the MATLAB implementation, run the original scripts in MATLAB with the Image Processing Toolbox and record outputs from the actual execution.
+
+### What is needed to complete validation?
+
+A meaningful project evaluation needs a small, documented test set with manually annotated weed/crop masks. For each image, compare the predicted segmentation mask with its reference mask and report the evaluation protocol alongside the measurements.
+
+For binary segmentation, commonly used measures include:
+
+- **Precision:** proportion of predicted positive pixels/regions that are truly positive.
+- **Recall:** proportion of reference positive pixels/regions that are detected.
+- **F1-score:** harmonic mean of precision and recall.
+- **Intersection over Union (IoU):** overlap between the predicted and reference masks divided by their union.
+
+The positive class (for example, weed pixels) must be defined consistently before calculating these metrics. If the current workflow only detects vegetation candidates, do not label those candidates as weeds in the evaluation without a reliable annotation rule.
 
 ## Limitations and Scope
 
@@ -235,7 +395,7 @@ The sensitivity, specificity, PPV and NPV listed in the research section belong 
 
 ## Reference
 
-A. J. Irías Tejeda and R. Castro Castro, **“Algorithm of Weed Detection in Crops by Computational Vision,”** *2019 International Conference on Electronics, Communications and Computers (CONIELECOMP)*, 2019, pp. 124–128.
+A. J. Irías Tejeda and R. Castro Castro, **“Algorithm of Weed Detection in Crops by Computational Vision,”** *2019 International Conference on Electronics, Communications and Computers (CONIELECOMP)*, 2019, pp. 124–128. [https://doi.org/10.1109/CONIELECOMP.2019.8673182](https://doi.org/10.1109/CONIELECOMP.2019.8673182).
 
 ## Author
 
