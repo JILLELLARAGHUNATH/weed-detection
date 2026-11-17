@@ -83,6 +83,15 @@ It then normalises the vegetation-emphasis image, applies median filtering and O
 
 ### Processing workflow
 
+### Animated processing overview
+
+<p align="center">
+  <img src="assets/animated-processing-workflow.svg" alt="Animated MATLAB weed-detection processing workflow" width="100%"/>
+</p>
+
+The animation illustrates the processing sequence conceptually. Actual candidate regions depend on the selected image and configured parameters.
+
+
 <p align="center">
   <img src="assets/processing-workflow.svg" alt="Original MATLAB image-processing workflow" width="100%"/>
 </p>
