@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="330" viewBox="0 0 1200 330" role="img" aria-labelledby="title desc">
+<title id="title">Animated weed detection image-processing workflow</title>
+<desc id="desc">Animated conceptual sequence: input crop image, Excess Green index, median filtering, Otsu segmentation, morphology, and vegetation candidate regions.</desc>
+<style>
+  text{font-family:Inter,Segoe UI,Arial,sans-serif}
+  .panel{fill:#0b211b;stroke:#285b45;stroke-width:1.5}
+  .head{fill:#f2fff7;font-size:18px;font-weight:700}
+  .sub{fill:#b8d9c5;font-size:12px}
+  .num{fill:#a7f3c5;font-size:12px;font-weight:700}
+  .flow{fill:none;stroke:#69d99a;stroke-width:3;stroke-linecap:round;stroke-dasharray:8 10;animation:travel 2.4s linear infinite}
+  .pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1.8s ease-in-out infinite}
+  .leaf{transform-box:fill-box;transform-origin:center;animation:sway 3s ease-in-out infinite}
+  @keyframes travel{to{stroke-dashoffset:-72}}
+  @keyframes pulse{0%,100%{opacity:.45;transform:scale(.88)}50%{opacity:1;transform:scale(1.12)}}
+  @keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+  @media(prefers-reduced-motion:reduce){.flow,.pulse,.leaf{animation:none}}
+</style>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061711"/><stop offset="1" stop-color="#102b20"/></linearGradient>
+ <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#3bbf78"/><stop offset="1" stop-color="#a4f2bc"/></linearGradient>
+</defs>
+<rect width="1200" height="330" rx="22" fill="url(#bg)"/>
+<text x="40" y="43" fill="#eafff0" font-size="23" font-weight="750">FROM FIELD IMAGE TO VEGETATION CANDIDATES</text>
+<text x="40" y="67" fill="#a9cbb6" font-size="13">Conceptual workflow used by the MATLAB image-processing prototype</text>
+<g transform="translate(35 104)">
+ <rect class="panel" width="165" height="166" rx="14"/>
+ <text class="num" x="15" y="25">01 · INPUT</text>
+ <rect x="17" y="42" width="131" height="75" rx="8" fill="#244a31"/>
+ <path d="M22 103 Q54 54 82 104 T143 95" fill="none" stroke="#8acb67" stroke-width="7"/>
+ <g class="leaf" fill="#6ee18d"><ellipse cx="71" cy="76" rx="12" ry="5" transform="rotate(-35 71 76)"/><ellipse cx="93" cy="86" rx="13" ry="5" transform="rotate(30 93 86)"/></g>
+ <text class="head" x="15" y="143">Crop image</text><text class="sub" x="15" y="159">RGB input</text>
+</g>
+<path class="flow" d="M205 188 H229"/>
+<g transform="translate(235 104)">
+ <rect class="panel" width="165" height="166" rx="14"/>
+ <text class="num" x="15" y="25">02 · EXG</text>
+ <rect x="17" y="42" width="131" height="75" rx="8" fill="#142e20"/>
+ <path d="M25 104 Q55 55 84 102 T140 96" fill="none" stroke="#7df5a4" stroke-width="10"/>
+ <circle class="pulse" cx="85" cy="80" r="23" fill="none" stroke="#b5ffca" stroke-width="2"/>
+ <text class="head" x="15" y="143">Green emphasis</text><text class="sub" x="15" y="159">ExG = 2G − R − B</text>
+</g>
+<path class="flow" d="M405 188 H429"/>
+<g transform="translate(435 104)">
+ <rect class="panel" width="165" height="166" rx="14"/>
+ <text class="num" x="15" y="25">03 · FILTER</text>
+ <g fill="#78c995"><rect x="26" y="51" width="23" height="23" rx="4"/><rect x="54" y="51" width="23" height="23" rx="4"/><rect x="82" y="51" width="23" height="23" rx="4"/><rect x="110" y="51" width="23" height="23" rx="4"/><rect x="26" y="79" width="23" height="23" rx="4"/><rect x="54" y="79" width="23" height="23" rx="4"/><rect x="82" y="79" width="23" height="23" rx="4"/><rect x="110" y="79" width="23" height="23" rx="4"/></g>
+ <text class="head" x="15" y="143">Noise reduction</text><text class="sub" x="15" y="159">Median filtering</text>
+</g>
+<path class="flow" d="M605 188 H629"/>
+<g transform="translate(635 104)">
+ <rect class="panel" width="165" height="166" rx="14"/>
+ <text class="num" x="15" y="25">04 · OTSU</text>
+ <rect x="18" y="45" width="129" height="67" rx="7" fill="#101a15"/>
+ <path d="M22 99 L43 99 L56 88 L70 88 L83 56 L97 56 L111 82 L125 82 L142 99" fill="none" stroke="#a3f2b7" stroke-width="3"/>
+ <path class="pulse" d="M88 45 V112" stroke="#f8d879" stroke-width="2" stroke-dasharray="4 4"/>
+ <text class="head" x="15" y="143">Segmentation</text><text class="sub" x="15" y="159">Automatic threshold</text>
+</g>
+<path class="flow" d="M805 188 H829"/>
+<g transform="translate(835 104)">
+ <rect class="panel" width="165" height="166" rx="14"/>
+ <text class="num" x="15" y="25">05 · MORPHOLOGY</text>
+ <g fill="#79df9c"><circle cx="52" cy="69" r="15"/><circle cx="83" cy="69" r="15"/><circle cx="68" cy="94" r="15"/><circle cx="111" cy="94" r="11"/></g>
+ <circle class="pulse" cx="82" cy="81" r="39" fill="none" stroke="#d0ffdc" stroke-width="2"/>
+ <text class="head" x="15" y="143">Mask cleanup</text><text class="sub" x="15" y="159">Fill &amp; remove noise</text>
+</g>
+<path class="flow" d="M1005 188 H1029"/>
+<g transform="translate(1035 104)">
+ <rect class="panel" width="130" height="166" rx="14"/>
+ <text class="num" x="13" y="25">06 · OUTPUT</text>
+ <rect x="16" y="43" width="98" height="72" rx="7" fill="#244a31"/>
+ <path d="M23 98 Q49 57 74 96 T108 89" fill="none" stroke="#82c66c" stroke-width="8"/>
+ <rect x="48" y="60" width="38" height="35" fill="none" stroke="#ffb36b" stroke-width="2"/>
+ <text class="head" x="13" y="143">Candidates</text><text class="sub" x="13" y="159">Visual review</text>
+</g>
+<text x="40" y="305" fill="#b5d7c0" font-size="12">Note: highlighted regions are vegetation candidates, not confirmed weed classifications.</text>
+</svg>
