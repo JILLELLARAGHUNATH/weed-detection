@@ -1,0 +1,12 @@
+image,width,height,otsu_threshold_0_255,candidate_regions,minimum_component_area_px
+weed1.jpg,606,397,112,25,36
+weed2.jpg,374,284,99,29,25
+weed3.jpg,600,406,107,43,36
+weed4.jpg,350,406,121,13,25
+weed5.jpg,644,491,105,18,47
+weed6.jpg,1200,800,102,13,144
+weed7.jpg,721,497,98,10,53
+weed8.jpg,375,500,98,72,28
+weed9.JPG,240,320,108,13,25
+weed10.jpg,400,322,100,48,25
+weed11.JPG,293,389,103,13,25
