@@ -336,7 +336,7 @@ The sensitivity, specificity, PPV and NPV listed in the research section belong 
 
 ## Reference
 
-A. J. Irías Tejeda and R. Castro Castro, **“Algorithm of Weed Detection in Crops by Computational Vision,”** *2019 International Conference on Electronics, Communications and Computers (CONIELECOMP)*, 2019, pp. 124–128.
+A. J. Irías Tejeda and R. Castro Castro, **“Algorithm of Weed Detection in Crops by Computational Vision,”** *2019 International Conference on Electronics, Communications and Computers (CONIELECOMP)*, 2019, pp. 124–128. [https://doi.org/10.1109/CONIELECOMP.2019.8673182](https://doi.org/10.1109/CONIELECOMP.2019.8673182).
 
 ## Author
 
