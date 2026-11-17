@@ -1,0 +1,46 @@
+name: Generate sample-image preview gallery
+
+on:
+  push:
+    branches:
+      - docs/results-gallery-and-readme
+    paths:
+      - "tools/generate_preview_gallery.py"
+      - "weed detection in crops/Code/sample images/**"
+      - ".github/workflows/generate-preview-gallery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out project branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install image-processing dependencies
+        run: python -m pip install --upgrade pip opencv-python-headless numpy
+
+      - name: Generate preview images and summary
+        run: python tools/generate_preview_gallery.py
+
+      - name: Commit generated previews
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/gallery.jpg results/preview_images results/processing_summary.csv
+          if git diff --cached --quiet; then
+            echo "No generated preview changes."
+          else
+            git commit -m "Generate sample image preview gallery"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
