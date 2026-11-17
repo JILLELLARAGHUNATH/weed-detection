@@ -167,6 +167,10 @@ The table below lists the sample image dimensions and the candidate-region count
 
 *Preview note: The gallery images and candidate counts are supplementary Python-generated previews of the supplied sample images. They illustrate the segmentation workflow; candidate regions are not ground-truth weed labels or accuracy measurements.*
 
+## Reproducible Results and Evaluation
+
+The MATLAB workflow exports the original image, ExG index, filtered image, binary masks, detection overlay, processing-stage comparison and candidate-region measurements. See the [results and evaluation guide](results/README.md) for the output file list and a ground-truth-based evaluation protocol. No project-specific accuracy score is claimed until annotated test data has been evaluated.
+
 ## Repository Structure
 
     weed-detection/
