@@ -178,6 +178,71 @@ The table below lists the sample image dimensions and the candidate-region count
             └── sample images/
                 └── weed1 ... weed11
 
+## Quick Project Summary
+
+| Item | Details |
+|---|---|
+| Project type | Academic image-processing prototype |
+| Main environment | MATLAB |
+| Main toolbox | Image Processing Toolbox |
+| Input | Crop-field image selected by the user |
+| Processing | Vegetation emphasis, filtering, thresholding and morphology |
+| Output | Visualised vegetation-candidate regions |
+| Current validation | MATLAB runtime validation is pending |
+
+This project currently performs **colour-based vegetation segmentation**. It does not yet provide a validated, general-purpose weed-versus-crop classifier.
+
+## Which MATLAB Script Should I Run?
+
+| Script | Method | Purpose |
+|---|---|---|
+| `main.m` | Green channel minus grayscale | Original implementation |
+| `main_improved.m` | Excess Green (ExG = 2G − R − B) | Separate improved vegetation-segmentation approach |
+
+The two scripts use different vegetation-emphasis calculations. Run them separately when comparing their behaviour; do not treat their outputs as directly equivalent.
+
+## Input Image Guidance
+
+For a useful first test:
+
+- Choose a clear crop-field image in a supported common image format such as JPG or PNG.
+- Prefer an image with visible vegetation and soil/background.
+- Avoid starting with heavily blurred, extremely dark, or overexposed images.
+- Keep the original sample image unchanged so that results can be compared consistently.
+- Record the image filename and its dimensions when documenting a test.
+
+Lighting, shadows, soil colour, camera angle and overlapping leaves can all change the segmentation result. A highlighted region should therefore be treated as a candidate, not as a confirmed weed.
+
+## Understanding the Processing Output
+
+The workflow is intended to make intermediate image-processing stages inspectable:
+
+1. **Input image:** the original crop-field photograph.
+2. **Vegetation emphasis:** a representation that increases the contrast of green vegetation.
+3. **Filtered image:** a noise-reduced representation.
+4. **Binary mask:** pixels selected by thresholding.
+5. **Morphological result:** a mask refined by shape-based operations.
+6. **Connected components:** separate regions measured as candidate objects.
+7. **Overlay:** candidate regions visualised on the input image.
+
+A connected component is only a region in the binary mask. It is not proof that the region is a weed. Crop plants, weeds, shadows and other green objects may be included.
+
+## Reproducible Testing Checklist
+
+When MATLAB becomes available, use this checklist for each test:
+
+- [ ] Record the MATLAB release and operating system.
+- [ ] Confirm that Image Processing Toolbox is installed.
+- [ ] Record which script was run: `main.m` or `main_improved.m`.
+- [ ] Record the exact input image filename and dimensions.
+- [ ] Save the original input image and generated output separately.
+- [ ] Record any warnings or errors shown in the MATLAB Command Window.
+- [ ] Inspect the binary mask and overlay, not only the final bounding boxes.
+- [ ] Repeat the test with more than one lighting condition.
+- [ ] Compare candidate regions against manually annotated ground truth before calculating metrics.
+
+Do not report accuracy, precision, recall, F1-score, IoU or execution time until the evaluation data, procedure and actual measurements are available.
+
 ## Getting Started
 
 ### Prerequisites
@@ -214,6 +279,19 @@ The repository includes MATLAB source code and supplementary sample-image previe
 The sample gallery and candidate counts are Python-generated previews, not MATLAB execution outputs or verified weed-detection results. They are provided to illustrate the image-processing concept only. No project-specific accuracy, precision, recall, F1-score or processing-time claim is made.
 
 To validate the MATLAB implementation, run the original scripts in MATLAB with the Image Processing Toolbox and record outputs from the actual execution.
+
+### What is needed to complete validation?
+
+A meaningful project evaluation needs a small, documented test set with manually annotated weed/crop masks. For each image, compare the predicted segmentation mask with its reference mask and report the evaluation protocol alongside the measurements.
+
+For binary segmentation, commonly used measures include:
+
+- **Precision:** proportion of predicted positive pixels/regions that are truly positive.
+- **Recall:** proportion of reference positive pixels/regions that are detected.
+- **F1-score:** harmonic mean of precision and recall.
+- **Intersection over Union (IoU):** overlap between the predicted and reference masks divided by their union.
+
+The positive class (for example, weed pixels) must be defined consistently before calculating these metrics. If the current workflow only detects vegetation candidates, do not label those candidates as weeds in the evaluation without a reliable annotation rule.
 
 ## Limitations and Scope
 
