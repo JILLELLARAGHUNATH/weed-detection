@@ -160,6 +160,24 @@ Eleven supplied sample images are processed by a reproducible Python preview scr
 
 ![Sample-image processing gallery](results/gallery.jpg)
 
+### Preview results by sample image
+
+The table below summarizes the Python-generated vegetation-candidate previews. Counts represent connected regions remaining after the configured area filter; they are **not** verified weed counts or accuracy measurements.
+
+| Sample image | Image resolution | Candidate regions | Preview |
+|---|---:|---:|---|
+| weed1.jpg | 606 × 397 | 25 | [View](results/preview_images/weed1_candidates.jpg) |
+| weed2.jpg | 374 × 284 | 39 | [View](results/preview_images/weed2_candidates.jpg) |
+| weed3.jpg | 600 × 406 | 45 | [View](results/preview_images/weed3_candidates.jpg) |
+| weed4.jpg | 350 × 406 | 18 | [View](results/preview_images/weed4_candidates.jpg) |
+| weed5.jpg | 644 × 491 | 18 | [View](results/preview_images/weed5_candidates.jpg) |
+| weed6.jpg | 1200 × 800 | 13 | [View](results/preview_images/weed6_candidates.jpg) |
+| weed7.jpg | 721 × 497 | 10 | [View](results/preview_images/weed7_candidates.jpg) |
+| weed8.jpg | 375 × 500 | 75 | [View](results/preview_images/weed8_candidates.jpg) |
+| weed9.JPG | 240 × 320 | 20 | [View](results/preview_images/weed9_candidates.jpg) |
+| weed10.jpg | 400 × 322 | 58 | [View](results/preview_images/weed10_candidates.jpg) |
+| weed11.JPG | 293 × 389 | 14 | [View](results/preview_images/weed11_candidates.jpg) |
+
 - [Processing summary CSV](results/processing_summary.csv)
 - [Individual candidate overlays](results/preview_images/)
 - [Processing methodology and provenance](results/PROCESSING_NOTES.md)
