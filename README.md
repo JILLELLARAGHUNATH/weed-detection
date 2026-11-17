@@ -207,6 +207,14 @@ Select an image when the file-selection dialog appears. The script displays the 
 
 To inspect the original implementation, open and run **main.m**.
 
+## Validation Status
+
+The repository includes MATLAB source code and supplementary sample-image previews. **The MATLAB scripts have not been executed or runtime-validated as part of this update**, because a MATLAB environment was not available.
+
+The sample gallery and candidate counts are Python-generated previews, not MATLAB execution outputs or verified weed-detection results. They are provided to illustrate the image-processing concept only. No project-specific accuracy, precision, recall, F1-score or processing-time claim is made.
+
+To validate the MATLAB implementation, run the original scripts in MATLAB with the Image Processing Toolbox and record outputs from the actual execution.
+
 ## Limitations and Scope
 
 1. **Similar appearance:** Crop plants and weeds can have similar colour and size characteristics, which can lead to incorrect candidate regions.
