@@ -13,78 +13,75 @@
 </p>
 
 <p>
-  <a href="#-overview">Overview</a> ·
-  <a href="#-features">Features</a> ·
-  <a href="#-getting-started">Getting Started</a> ·
-  <a href="#-workflow">Workflow</a> ·
-  <a href="#-limitations">Limitations</a>
+  <a href="#overview">Overview</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#getting-started">Getting Started</a> ·
+  <a href="#processing-workflow">Workflow</a> ·
+  <a href="#sample-image-previews">Sample Previews</a> ·
+  <a href="#limitations">Limitations</a>
 </p>
 
 </div>
 
 ---
 
-## 🌾 Overview
+## Overview
 
-Weeds compete with crops for water, nutrients, sunlight, and growing space. This project explores a classical computer-vision workflow for identifying **potential weed regions** in crop images using MATLAB and its Image Processing Toolbox.
+Weeds compete with crops for water, nutrients, sunlight, and growing space. This repository explores a classical computer-vision workflow for highlighting **potential vegetation regions** in crop-field images using MATLAB and the Image Processing Toolbox.
 
-The script analyses colour information, segments image regions, applies morphological operations, and visualises selected candidate regions with red bounding boxes.
+The project includes the original MATLAB script, a separate improved implementation, sample input images, and documentation of an additional Python-based preview run.
 
 > [!IMPORTANT]
-> This is an experimental image-processing prototype, not a validated commercial weed-recognition system. A highlighted region is a segmentation candidate; it is not proof that the plant is a weed.
+> This is an image-processing prototype. Green vegetation candidates are not automatically confirmed weeds. Crop-versus-weed classification requires additional context and independent validation.
 
-## ✨ Features
+## Features
 
 | Capability | Description |
 |---|---|
-| 🖼️ Image input | Select a JPG crop image through a file dialog |
-| 🎨 Colour analysis | Extract RGB channels and compare the green channel with grayscale |
-| 🧹 Noise reduction | Apply median filtering |
-| 🎯 Thresholding | Use Otsu's threshold selection with `graythresh` |
-| 🧩 Morphology | Fill holes and apply a morphological boundary operation |
-| 🔎 Region analysis | Label connected regions and measure region properties |
-| 🟥 Visual output | Draw red bounding boxes around selected candidate regions |
+| Image input | Select a field image for processing |
+| Vegetation emphasis | Green-channel difference in the original approach; Excess Green (ExG) in the improved script |
+| Noise reduction | Median filtering |
+| Thresholding | Otsu threshold selection |
+| Morphology | Opening, closing and hole filling in the improved pipeline |
+| Region analysis | Connected components, region measurements and candidate bounding boxes |
+| Export | Intermediate images and CSV summary from the improved MATLAB script |
 
-## 🧰 Technology
-
-<p>
-  <img src="https://img.shields.io/badge/Language-MATLAB-orange?logo=mathworks&logoColor=white" alt="MATLAB"/>
-  <img src="https://img.shields.io/badge/Toolbox-Image%20Processing-0b8f58" alt="Image Processing Toolbox"/>
-  <img src="https://img.shields.io/badge/Input-JPG%20Images-2563eb" alt="JPG images"/>
-</p>
+## Technology
 
 - **Language:** MATLAB
 - **Required toolbox:** MATLAB Image Processing Toolbox
-- **Input format currently used by the script:** JPG
-- **Methods:** Colour-channel processing, threshold segmentation, mathematical morphology, connected-component analysis
+- **Methods:** Colour-based vegetation emphasis, filtering, threshold segmentation, mathematical morphology and connected-component analysis
+- **Preview processing:** Python-generated illustrative outputs from the 11 supplied sample images
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 weed-detection/
 ├── assets/
 │   ├── weed-detection-banner.svg
-│   └── processing-workflow.svg
+│   ├── processing-workflow.svg
+│   └── exg-processing-pipeline.svg
+├── results/
+│   ├── PROCESSING_NOTES.md
+│   └── processing_summary.csv
 ├── README.md
 └── weed detection in crops/
     └── Code/
-        ├── main.m                 # Original project script
-        ├── main_improved.m         # Improved ExG-based candidate pipeline
+        ├── main.m
+        ├── main_improved.m
         └── sample images/
-            ├── weed1.jpg
-            ├── weed2.jpg
-            ├── ...
-            └── weed11.JPG
+            └── weed1 ... weed11
 ```
 
-## 🚀 Getting Started
+**Preservation note:** The original `weed detection in crops/Code/main.m` is retained unchanged. The improved implementation is kept separately as `main_improved.m`.
+
+## Getting Started
 
 ### Prerequisites
 
-- MATLAB installed on your computer.
-- MATLAB **Image Processing Toolbox**.
-- A desktop session that supports MATLAB figures and the image-selection dialog.
-- A JPG image to process (the repository includes sample images).
+- MATLAB
+- MATLAB Image Processing Toolbox
+- A desktop MATLAB session for image selection and figure display
 
 ### 1. Clone the repository
 
@@ -93,113 +90,83 @@ git clone https://github.com/JILLELLARAGHUNATH/weed-detection.git
 cd weed-detection
 ```
 
-### 2. Open the MATLAB code folder
+### 2. Open the code folder in MATLAB
 
-In MATLAB, set the current folder to:
+Set the current folder to:
 
 ```text
 weed detection in crops/Code/
 ```
 
-### 3. Run the improved pipeline (recommended)
+### 3. Run the improved implementation
 
-Open `main_improved.m` and select **Run**, or enter this command in the MATLAB Command Window:
+Open `main_improved.m` and select **Run**, or enter:
 
 ```matlab
 run('main_improved.m')
 ```
 
-Select a JPG, JPEG, PNG, or TIFF image when prompted. The script creates a folder beside the selected image containing the intermediate masks, a detection-figure export, and a CSV region summary when regions are found.
+Choose a JPG, JPEG, PNG or TIFF image when prompted. The improved script is designed to save intermediate processing images, an annotated candidate-region figure and a CSV summary beside the selected image.
 
-The improved script uses the Excess Green (ExG) index, median filtering, Otsu thresholding, morphological cleanup, and connected-component measurements. It requires MATLAB and Image Processing Toolbox. The original `main.m` is retained for reference.
+The original `main.m` remains available for reference and has not been replaced.
 
-### 4. Choose an image
-
-When the file-selection dialog opens, select a JPG image. You can begin with one of the images in the `sample images` folder.
-
-### 5. Inspect the figures
-
-The script displays the original image and intermediate processing stages, followed by a final visualisation with red rectangles around selected regions. Evaluation-related values are also printed in the Command Window.
-
-## 🔬 Workflow
-
-The diagram below represents the original pipeline. The improved script uses an Excess Green index before thresholding and includes explicit cleanup and export stages.
+## Processing Workflow
 
 <p align="center">
-  <img src="assets/processing-workflow.svg" alt="Animated diagram of the weed image processing workflow" width="100%"/>
+  <img src="assets/exg-processing-pipeline.svg" alt="Excess Green image-processing workflow" width="100%"/>
 </p>
 
-| Step | Processing stage | What the script does |
-|---:|---|---|
-| 1 | Image input | Loads the selected RGB image |
-| 2 | Grayscale conversion | Converts the image using `rgb2gray` |
-| 3 | Channel analysis | Extracts RGB channels and subtracts grayscale from the green channel |
-| 4 | Denoising | Applies `medfilt2` |
-| 5 | Threshold segmentation | Calculates an Otsu threshold with `graythresh` and creates a binary image |
-| 6 | Morphological processing | Fills holes using `imfill` and applies `bwmorph` |
-| 7 | Region analysis | Labels regions and obtains measurements with `bwlabel` and `regionprops` |
-| 8 | Visualisation | Draws bounding boxes around selected candidate regions |
+The improved script follows these stages:
 
-## 📊 Output
+1. Read the input image and prepare its colour channels.
+2. Calculate the Excess Green index: `ExG = 2G - R - B`.
+3. Normalize the ExG image for thresholding.
+4. Apply a median filter.
+5. Select a threshold using Otsu's method.
+6. Refine the binary mask using morphological operations and hole filling.
+7. Identify connected components and measure candidate regions.
+8. Visualize candidate regions with bounding boxes and export processing outputs.
 
-The current implementation produces MATLAB figure windows showing:
+The original research approach described in the supplied paper uses green-channel minus grayscale. The ExG formula above belongs to the separate improved script; the two formulas should not be described as identical.
 
-- Original input image.
-- Grayscale image.
-- Green-channel subtraction result.
-- Median-filtered image.
-- Thresholded binary image.
-- Morphological processing result.
-- Labelled regions.
-- Final image with red candidate-region bounding boxes.
+## Sample Image Previews
 
-**Note:** The repository contains sample input images. No MATLAB execution has been performed in this development environment, so generated output files and measured benchmark results are not yet included. The improved script saves its own outputs when run in MATLAB; do not treat conceptual diagrams as measured detection results.
+Eleven supplied sample images were processed in a separate Python preview workflow. The preview procedure applies ExG emphasis, median filtering, per-image Otsu thresholding, morphological cleanup and connected-component candidate boxes.
 
+- [Processing summary CSV](results/processing_summary.csv)
+- [Processing methodology and provenance](results/PROCESSING_NOTES.md)
 
-## 🧪 Improved MATLAB Pipeline
+> [!NOTE]
+> The Python previews are not MATLAB execution outputs and are not a verified MATLAB-equivalent run. Candidate boxes indicate vegetation regions, not confirmed weed detections. The preview thresholds are calculated independently per image and are not benchmark scores.
 
-The repository now includes `main_improved.m` alongside the original `main.m`. The original file is preserved. The improved version:
+## Limitations
 
-- Accepts JPG, JPEG, PNG, and TIFF images.
-- Calculates an Excess Green (ExG) vegetation index.
-- Applies median filtering and Otsu thresholding.
-- Uses opening, closing, hole filling, and small-component removal.
-- Measures connected candidate regions and draws bounding boxes.
-- Exports intermediate images, a final annotated figure, and a CSV region summary.
+1. **Crop/weed colour similarity:** Crop leaves and weeds can have similar green values, producing false positives or missed regions.
+2. **Lighting variation:** Shadows, reflections, exposure and soil conditions affect segmentation.
+3. **No semantic classifier:** The current pipeline does not identify weed species or reliably distinguish every crop plant from a weed.
+4. **Ground-truth evaluation is not established:** Valid performance metrics require independently annotated reference masks.
+5. **MATLAB execution status:** The improved MATLAB script has been prepared, but execution and output validation in MATLAB have not been completed in this development environment.
 
-**Interpretation:** ExG highlights green-vegetation candidates. It does not reliably distinguish weeds from crop plants without additional contextual features or a trained classifier. The script does not report accuracy metrics because no independent ground-truth masks are included.
+The legacy `main.m` derives its comparison mask from the input image rather than an independent annotation. Its printed sensitivity, specificity, PPV and NPV should therefore not be presented as validated model-performance metrics. The improved script intentionally does not report these metrics.
 
-## ⚠️ Limitations and Evaluation Notes
-
-A few implementation details matter when interpreting the output:
-
-1. **Colour similarity:** Crop leaves and weeds can have similar green values. Colour subtraction and thresholding may therefore produce false positives or miss regions.
-2. **Lighting variation:** Shadows, reflections, camera exposure, and field conditions can change segmentation results.
-3. **Candidate regions are not semantic labels:** The script does not train a classifier or identify weed species. It highlights regions selected by image-processing rules.
-4. **Ground-truth evaluation is not established:** The legacy `main.m` derives `gt_bw` from the input image itself rather than loading an independently annotated ground-truth mask. Consequently, its printed sensitivity, specificity, positive predictive value, and negative predictive value should **not** be treated as validated model-performance metrics. The improved `main_improved.m` intentionally omits these invalid metrics.
-5. **Code validation is needed:** The region filtering, binary-mask dimensions and data types, and bounding-box selection logic should be tested on manually labelled images before making accuracy claims.
-
-## 🛠️ Future Enhancements
+## Future Enhancements
 
 - [ ] Add manually annotated ground-truth masks.
 - [ ] Build a repeatable train/validation/test evaluation dataset.
-- [ ] Calculate precision, recall, F1-score, specificity, and IoU from valid masks.
+- [ ] Calculate precision, recall, F1-score, specificity and IoU from valid annotations.
 - [ ] Improve robustness to changing light and soil backgrounds.
-- [ ] Add image input validation and support for additional formats.
-- [ ] Compare the current method with deep-learning detection or segmentation models.
 - [ ] Add batch processing and exportable result images.
-- [ ] Create a simple MATLAB App Designer interface.
+- [ ] Compare classical image processing with deep-learning segmentation methods.
+- [ ] Create a MATLAB App Designer interface.
 
-## 🤝 Contributing
-
-Suggestions and improvements are welcome.
+## Contributing
 
 1. Fork the repository.
 2. Create a feature branch.
-3. Make and test your changes in MATLAB.
+3. Make and test changes in MATLAB.
 4. Open a pull request describing the change and how it was tested.
 
-## 👨‍💻 Author
+## Author
 
 <div align="center">
 
@@ -211,14 +178,14 @@ Suggestions and improvements are welcome.
 
 </div>
 
-## 📄 License
+## License
 
-No license file is currently present in this repository. Until a license is added, the project remains subject to the default copyright rules; reuse and redistribution are not automatically permitted.
+No license file is currently present. Until a license is added, the repository remains subject to default copyright rules; reuse and redistribution are not automatically permitted.
 
 ---
 
 <div align="center">
 
-**Built with MATLAB · Image Processing · Curiosity for smarter agriculture 🌱**
+**Built with MATLAB · Image Processing · Computer Vision 🌱**
 
 </div>
