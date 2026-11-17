@@ -57,6 +57,8 @@ The project includes the original MATLAB script, a separate improved implementat
 
 ```text
 weed-detection/
+├── tests/
+│   └── TestWeedvisionFunctions.m
 ├── assets/
 │   ├── weed-detection-banner.svg
 │   ├── processing-workflow.svg
@@ -119,6 +121,19 @@ run('main_modular.m')
 The modular entry point calls separate functions for image input, ExG extraction, segmentation, morphology, region measurement, visualization and output export. Choose a JPG, JPEG, PNG or TIFF image when prompted. Outputs are saved beside the selected image in a dedicated folder.
 
 The original `main.m` is preserved unchanged. `main_improved.m` is also retained as a standalone version.
+
+## MATLAB Unit Tests
+
+A function-based test suite is provided for the modular `+weedvision` package. It covers RGB and grayscale image loading, missing-file handling, ExG extraction, Otsu segmentation, morphology cleanup, connected-region measurements and empty-mask handling.
+
+Run the tests from the repository root in MATLAB:
+
+```matlab
+results = runtests('tests/TestWeedvisionFunctions.m');
+disp(table(results));
+```
+
+The tests require MATLAB and the Image Processing Toolbox. They are provided for local verification; they have not yet been executed in MATLAB in this development environment.
 
 ## Processing Workflow
 
