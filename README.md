@@ -218,3 +218,12 @@ No license file is currently present. Until a license is added, the repository r
 **Built with MATLAB · Image Processing · Computer Vision 🌱**
 
 </div>
+
+
+## Automated Python Quality Checks
+
+A separate GitHub Actions workflow validates the Python preview generator when relevant files are changed in a pull request to `main`, when the project feature branch is updated, or when manually dispatched. It checks Python syntax, runs the preview generator, and verifies that the gallery, CSV summary and per-image preview files are present and non-empty.
+
+The workflow uses read-only repository permissions and does not commit generated files. The separate gallery-generation workflow remains responsible for committing refreshed preview outputs to the feature branch.
+
+These checks validate the Python preview workflow only; they do not execute or validate MATLAB code.
