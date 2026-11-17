@@ -131,9 +131,12 @@ The original research approach described in the supplied paper uses green-channe
 
 ## Sample Image Previews
 
-Eleven supplied sample images were processed in a separate Python preview workflow. The preview procedure applies ExG emphasis, median filtering, per-image Otsu thresholding, morphological cleanup and connected-component candidate boxes.
+Eleven supplied sample images are processed by a reproducible Python preview script. A GitHub Actions workflow generates the gallery, per-image candidate overlays and CSV summary whenever the generator or sample images change.
+
+![Sample-image processing gallery](results/gallery.jpg)
 
 - [Processing summary CSV](results/processing_summary.csv)
+- [Individual candidate overlays](results/preview_images/)
 - [Processing methodology and provenance](results/PROCESSING_NOTES.md)
 
 > [!NOTE]
