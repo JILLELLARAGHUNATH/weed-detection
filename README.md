@@ -67,8 +67,10 @@ weed-detection/
 ├── README.md
 └── weed detection in crops/
     └── Code/
-        ├── main.m
-        ├── main_improved.m
+        ├── main.m                 # Original, preserved
+        ├── main_improved.m        # Standalone improved script
+        ├── main_modular.m         # Modular entry point
+        ├── +weedvision/           # Reusable processing functions
         └── sample images/
             └── weed1 ... weed11
 ```
@@ -98,7 +100,7 @@ Set the current folder to:
 weed detection in crops/Code/
 ```
 
-### 3. Run the improved implementation
+### 3. Run the standalone improved implementation
 
 Open `main_improved.m` and select **Run**, or enter:
 
@@ -106,9 +108,17 @@ Open `main_improved.m` and select **Run**, or enter:
 run('main_improved.m')
 ```
 
-Choose a JPG, JPEG, PNG or TIFF image when prompted. The improved script is designed to save intermediate processing images, an annotated candidate-region figure and a CSV summary beside the selected image.
+### 4. Run the modular implementation
 
-The original `main.m` remains available for reference and has not been replaced.
+For the function-based version, keep the `+weedvision` package folder beside `main_modular.m`, set the current folder to `weed detection in crops/Code/`, and run:
+
+```matlab
+run('main_modular.m')
+```
+
+The modular entry point calls separate functions for image input, ExG extraction, segmentation, morphology, region measurement, visualization and output export. Choose a JPG, JPEG, PNG or TIFF image when prompted. Outputs are saved beside the selected image in a dedicated folder.
+
+The original `main.m` is preserved unchanged. `main_improved.m` is also retained as a standalone version.
 
 ## Processing Workflow
 
@@ -116,7 +126,7 @@ The original `main.m` remains available for reference and has not been replaced.
   <img src="assets/exg-processing-pipeline.svg" alt="Excess Green image-processing workflow" width="100%"/>
 </p>
 
-The improved script follows these stages:
+Both improved implementations follow these stages:
 
 1. Read the input image and prepare its colour channels.
 2. Calculate the Excess Green index: `ExG = 2G - R - B`.
@@ -148,12 +158,13 @@ Eleven supplied sample images are processed by a reproducible Python preview scr
 2. **Lighting variation:** Shadows, reflections, exposure and soil conditions affect segmentation.
 3. **No semantic classifier:** The current pipeline does not identify weed species or reliably distinguish every crop plant from a weed.
 4. **Ground-truth evaluation is not established:** Valid performance metrics require independently annotated reference masks.
-5. **MATLAB execution status:** The improved MATLAB script has been prepared, but execution and output validation in MATLAB have not been completed in this development environment.
+5. **MATLAB execution status:** The improved and modular MATLAB scripts have been prepared, but execution and output validation in MATLAB have not been completed in this development environment.
 
 The legacy `main.m` derives its comparison mask from the input image rather than an independent annotation. Its printed sensitivity, specificity, PPV and NPV should therefore not be presented as validated model-performance metrics. The improved script intentionally does not report these metrics.
 
 ## Future Enhancements
 
+- [x] Add a modular MATLAB entry point and reusable processing functions (prepared; MATLAB runtime testing still pending).
 - [ ] Add manually annotated ground-truth masks.
 - [ ] Build a repeatable train/validation/test evaluation dataset.
 - [ ] Calculate precision, recall, F1-score, specificity and IoU from valid annotations.
