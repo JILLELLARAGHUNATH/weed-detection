@@ -104,6 +104,47 @@ The improved implementation follows these stages:
 
 > **Implementation note:** The original script is preserved as **main.m**. The ExG-based approach is provided separately as **main_improved.m**.
 
+### Algorithm details
+
+#### Original script: `main.m`
+
+The original implementation performs the following operations:
+
+1. Reads a user-selected JPG image and converts it to grayscale with `rgb2gray`.
+2. Extracts the red, green and blue channels.
+3. Subtracts the grayscale image from the green channel: `greenChannel - grayImage`.
+4. Applies a median filter using `medfilt2`.
+5. Calculates an Otsu threshold with `graythresh` and creates a binary image with `im2bw`.
+6. Fills holes, applies the `remove` morphological operation, labels regions and calls `bwareaopen`.
+7. Measures region areas and draws bounding boxes for regions smaller than the calculated average area.
+
+The final size-based selection is a heuristic in the source code. It does not establish that a region is a weed. The original script also applies `bwareaopen` to the labelled image rather than explicitly to a logical binary mask, so its region-cleanup behaviour should be checked in MATLAB before relying on the output.
+
+#### Improved script: `main_improved.m`
+
+The improved implementation uses a more explicit vegetation-candidate segmentation pipeline:
+
+| Stage | Implementation | Purpose |
+|---|---|---|
+| Input normalization | Converts input to 8-bit RGB; grayscale images are replicated across three channels and extra channels are discarded | Provides a three-channel image for colour calculations |
+| Excess Green | `ExG = 2G - R - B` | Emphasises green relative to red and blue |
+| Normalization | `mat2gray` | Scales the ExG image for subsequent processing |
+| Smoothing | 3 × 3 median filter with symmetric padding | Reduces local noise |
+| Thresholding | Otsu threshold from `graythresh`, applied with `imbinarize` | Produces an initial binary candidate mask |
+| Morphological opening | Disk structuring element, radius 2 | Removes small foreground details and narrow connections |
+| Morphological closing | Disk structuring element, radius 3 | Closes small gaps in foreground regions |
+| Hole filling | `imfill(..., 'holes')` | Fills enclosed holes in candidate regions |
+| Small-region removal | `bwareaopen` with minimum area `max(10, round(imagePixels × 0.0001))` | Removes connected foreground components below the configured size |
+| Region analysis | 8-connected components and `regionprops` | Measures area, bounding box, centroid and eccentricity |
+
+The improved script uses a per-image Otsu threshold. Its output therefore depends on the distribution of pixel values in each selected image. The morphological size settings are fixed relative to the image dimensions only for the minimum-area threshold; the disk radii remain fixed pixel values.
+
+### How to interpret the algorithms
+
+Both implementations rely on colour and connected-region geometry. Neither uses labelled training data, a learned classifier, plant-species recognition or a crop-versus-weed decision model. A green region can belong to a crop, weed or another object. Soil, shadows, illumination, camera white balance, overlapping leaves and image resolution can affect the masks.
+
+The two scripts should be treated as separate approaches, not as interchangeable versions of one identical algorithm. The improved script's more explicit preprocessing and output handling do not, by themselves, prove higher detection accuracy. A fair comparison requires the same test images, a defined reference annotation, and a documented evaluation procedure.
+
 ## Research Reference Results
 
 The project documentation refers to the published paper **“Algorithm of Weed Detection in Crops by Computational Vision”** by A. J. Irías Tejeda and R. Castro Castro, presented at CONIELECOMP 2019.
