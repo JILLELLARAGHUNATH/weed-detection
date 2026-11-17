@@ -214,6 +214,8 @@ The two scripts use different vegetation-emphasis calculations. Run them separat
 
 The original script also calculates sensitivity, specificity, PPV and NPV using a thresholded version of the input image as its comparison mask. That is not manually annotated ground truth, so those printed values must not be treated as a valid project evaluation. Use independently labelled reference masks for any performance evaluation.
 
+The original script also has a fragile region-count assumption: it accesses `region_img(2)` directly. If fewer than two regions are available, execution can stop at that line. It also suppresses MATLAB warnings globally with `warning off`, which can make troubleshooting harder. These are additional reasons to use `main_improved.m` as the starting point.
+
 ## Input Image Guidance
 
 For a useful first test:
