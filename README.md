@@ -201,6 +201,19 @@ This project currently performs **colour-based vegetation segmentation**. It doe
 
 The two scripts use different vegetation-emphasis calculations. Run them separately when comparing their behaviour; do not treat their outputs as directly equivalent.
 
+### Script compatibility and implementation notes
+
+| Detail | `main.m` | `main_improved.m` |
+|---|---|---|
+| File selection | JPG files only | JPG, JPEG, PNG, TIF and TIFF |
+| Input handling | Expects a colour RGB image | Converts grayscale input to RGB and uses the first three channels if extra channels are present |
+| Cancellation handling | Does not explicitly handle cancelling the file picker | Cancelling the file picker safely stops processing |
+| Saved files | Displays figures; does not create the structured output folder used by the improved script | Creates an `<image-name>_weed_detection_output` folder beside the selected image |
+
+**Recommendation:** Start with `main_improved.m`. It has clearer input handling and saves the intermediate masks and candidate-region data. The original `main.m` is retained for comparison and contains older assumptions; for example, it expects a JPG RGB image and should be tested carefully with different inputs.
+
+The original script also calculates sensitivity, specificity, PPV and NPV using a thresholded version of the input image as its comparison mask. That is not manually annotated ground truth, so those printed values must not be treated as a valid project evaluation. Use independently labelled reference masks for any performance evaluation.
+
 ## Input Image Guidance
 
 For a useful first test:
@@ -268,9 +281,19 @@ Open **main_improved.m** in MATLAB and select **Run**, or execute:
 
     run('main_improved.m')
 
-Select an image when the file-selection dialog appears. The script displays the processing stages and saves intermediate outputs and candidate-region information beside the selected image.
+Select a JPG, JPEG, PNG, TIF or TIFF image when the file-selection dialog appears. The script displays the processing stages and creates an output folder beside the selected image, named `<image-name>_weed_detection_output`.
 
-To inspect the original implementation, open and run **main.m**.
+The improved script saves these outputs:
+
+- `01_original.png` — normalized RGB input image.
+- `02_excess_green.png` — normalized Excess Green image.
+- `03_filtered.png` — median-filtered vegetation index.
+- `04_initial_segmentation.png` — thresholded binary mask.
+- `05_cleaned_mask.png` — mask after morphological cleanup.
+- `candidate_regions.csv` — region ID, area in pixels and eccentricity; created when at least one candidate region is found.
+- `06_detection_result.png` — annotated candidate overlay. If figure export is unavailable, the script falls back to `07_detection_result.png`.
+
+To inspect the original implementation, open and run **main.m** separately. It accepts JPG input only and does not create the same structured output folder.
 
 ## Validation Status
 
