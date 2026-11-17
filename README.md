@@ -338,6 +338,22 @@ The improved script saves these outputs:
 
 To inspect the original implementation, open and run **main.m** separately. It accepts JPG input only and does not create the same structured output folder.
 
+## Troubleshooting
+
+| Symptom | Likely explanation | What to check |
+|---|---|---|
+| MATLAB reports that a function such as `imbinarize`, `imopen`, `bwconncomp` or `regionprops` is undefined | The required Image Processing Toolbox may be missing or unavailable | Confirm that Image Processing Toolbox is installed and licensed in your MATLAB environment |
+| The file-selection dialog closes without processing | No input image was selected | In `main_improved.m`, cancelling the dialog intentionally stops the script; run it again and choose a supported image |
+| An image does not appear in the file picker | Its extension may not be supported by the selected script | `main.m` accepts JPG files; `main_improved.m` accepts JPG, JPEG, PNG, TIF and TIFF |
+| The output folder or image files are not created | MATLAB may not have permission to write beside the selected input image, or the destination may be unavailable | Choose an input image in a folder where you have write permission, then run the improved script again |
+| No candidate boxes appear | The thresholded and cleaned mask may contain no connected foreground regions | Inspect the Excess Green image, initial segmentation and cleaned mask; try another well-lit image with visible vegetation |
+| The CSV file is missing from the output folder | The improved script writes `candidate_regions.csv` only when at least one candidate region is found | Check the cleaned mask and the Command Window's reported candidate-region count |
+| The annotated result is saved as `07_detection_result.png` instead of `06_detection_result.png` | The script's `exportgraphics` call failed and its fallback save operation was used | Open the fallback image and check the MATLAB Command Window for any export-related message |
+
+**Important:** These checks are based on the current source code. They are troubleshooting guidance, not evidence that the scripts have been executed successfully in a MATLAB environment. The original `main.m` does not include the improved script's file-picker cancellation handling and may fail if the dialog is cancelled.
+
+---
+
 ## Validation Status
 
 The repository includes MATLAB source code and supplementary sample-image previews. **The MATLAB scripts have not been executed or runtime-validated as part of this update**, because a MATLAB environment was not available.
